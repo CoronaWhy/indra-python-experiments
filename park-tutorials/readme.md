@@ -7,6 +7,9 @@ These experiments are just baby steps to learn the massive Indra ecosystem (and,
 # Experiments
 From time to time, I might create directories for outputs of these experiments for further study.
 
+### indra8.py
+This is a single PMCID test which performs all filtering. It is presently configured to run Reach running locally.
+
 ### indra9.py
 This processes an array of PMCIds all the way through filtering and accumulating the final Statements in a single JSON file, as well as an HTML file for browsing.
 

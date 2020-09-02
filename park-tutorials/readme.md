@@ -7,6 +7,9 @@ These experiments are just baby steps to learn the massive Indra ecosystem (and,
 ## Experiments
 From time to time, I might create directories for outputs of these experiments for further study.
 
+### Eidos Experiments
+Eidos is a wrapper around the Indra ecosystem for reading sentences. I gave them their own directory
+
 ### indra8.py
 This is a single PMCID test which performs all filtering. It is presently configured to run Reach running locally.
 My experience running Reach locally is that it is sensitive to which version of Scala is in play. I found that it required version 2.12; it was developed on 2.11, but my Mac had 2.13 installed, so I had to bring down 2.12 and export the path to 2.12 before running the boot command, which is 

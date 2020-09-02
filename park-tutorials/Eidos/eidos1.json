@@ -1,0 +1,370 @@
+{
+	'@context': {
+		'Argument': 'https://w3id.org/wm/cag/argument',
+		'Grounding': 'https://w3id.org/wm/cag/grounding',
+		'Interval': 'https://w3id.org/wm/cag/interval',
+		'Extraction': 'https://w3id.org/wm/cag/extraction',
+		'Provenance': 'https://w3id.org/wm/cag/provenance',
+		'Groundings': 'https://w3id.org/wm/cag/groundings',
+		'State': 'https://w3id.org/wm/cag/state',
+		'Dependency': 'https://w3id.org/wm/cag/dependency',
+		'Corpus': 'https://w3id.org/wm/cag/corpus',
+		'Trigger': 'https://w3id.org/wm/cag/trigger',
+		'Sentence': 'https://w3id.org/wm/cag/sentence',
+		'Word': 'https://w3id.org/wm/cag/word',
+		'Document': 'https://w3id.org/wm/cag/document'
+	},
+	'@type': 'Corpus',
+	'documents': [{
+		'@type': 'Document',
+		'@id': '_:Document_1',
+		'text': 'Drought increases regional insecurity.',
+		'sentences': [{
+			'text': 'Drought increases regional insecurity .',
+			'rawText': 'Drought increases regional insecurity.',
+			'words': [{
+				'endOffset': 7,
+				'chunk': 'B-NP',
+				'lemma': 'drought',
+				'tag': 'NN',
+				'text': 'Drought',
+				'norm': 'O',
+				'entity': 'O',
+				'startOffset': 0,
+				'@type': 'Word',
+				'@id': '_:Word_1'
+			}, {
+				'endOffset': 17,
+				'chunk': 'B-VP',
+				'lemma': 'increase',
+				'tag': 'VBZ',
+				'text': 'increases',
+				'norm': 'O',
+				'entity': 'O',
+				'startOffset': 8,
+				'@type': 'Word',
+				'@id': '_:Word_2'
+			}, {
+				'endOffset': 26,
+				'chunk': 'B-NP',
+				'lemma': 'regional',
+				'tag': 'JJ',
+				'text': 'regional',
+				'norm': 'O',
+				'entity': 'O',
+				'startOffset': 18,
+				'@type': 'Word',
+				'@id': '_:Word_3'
+			}, {
+				'endOffset': 37,
+				'chunk': 'I-NP',
+				'lemma': 'insecurity',
+				'tag': 'NN',
+				'text': 'insecurity',
+				'norm': 'O',
+				'entity': 'O',
+				'startOffset': 27,
+				'@type': 'Word',
+				'@id': '_:Word_4'
+			}, {
+				'endOffset': 38,
+				'chunk': 'O',
+				'lemma': '.',
+				'tag': '.',
+				'text': '.',
+				'norm': 'O',
+				'entity': 'O',
+				'startOffset': 37,
+				'@type': 'Word',
+				'@id': '_:Word_5'
+			}],
+			'@type': 'Sentence',
+			'dependencies': [{
+				'@type': 'Dependency',
+				'source': {
+					'@id': '_:Word_2'
+				},
+				'destination': {
+					'@id': '_:Word_4'
+				},
+				'relation': 'dobj'
+			}, {
+				'@type': 'Dependency',
+				'source': {
+					'@id': '_:Word_4'
+				},
+				'destination': {
+					'@id': '_:Word_3'
+				},
+				'relation': 'amod'
+			}, {
+				'@type': 'Dependency',
+				'source': {
+					'@id': '_:Word_2'
+				},
+				'destination': {
+					'@id': '_:Word_1'
+				},
+				'relation': 'nsubj'
+			}, {
+				'@type': 'Dependency',
+				'source': {
+					'@id': '_:Word_2'
+				},
+				'destination': {
+					'@id': '_:Word_5'
+				},
+				'relation': 'punct'
+			}],
+			'@id': '_:Sentence_1'
+		}]
+	}],
+	'extractions': [{
+		'subtype': 'entity',
+		'rule': 'simple-np',
+		'text': 'Drought',
+		'canonicalName': 'Drought',
+		'labels': ['Concept', 'Entity'],
+		'relevance': 0.8567294478416443,
+		'provenance': [{
+			'documentCharPositions': [{
+				'@type': 'Interval',
+				'start': 0,
+				'end': 6
+			}],
+			'document': {
+				'@id': '_:Document_1'
+			},
+			'sentenceWordPositions': [{
+				'@type': 'Interval',
+				'start': 1,
+				'end': 1
+			}],
+			'@type': 'Provenance',
+			'sentence': {
+				'@id': '_:Sentence_1'
+			}
+		}],
+		'@type': 'Extraction',
+		'type': 'concept',
+		'groundings': [{
+			'name': 'wm_flattened',
+			'versionDate': '2020-08-19T14:42:58Z',
+			'version': '4a840f1a7a3b4c1a9d085fe3c3870417e4acbaf6',
+			'values': [{
+				'@type': 'Grounding',
+				'ontologyConcept': 'wm/concept/causal_factor/crisis_and_disaster/environmental_disasters/natural_disaster/drought',
+				'value': 0.8751568794250488
+			}, {
+				'@type': 'Grounding',
+				'ontologyConcept': 'wm/concept/causal_factor/environmental/meteorologic/precipitation/rainfall',
+				'value': 0.6603639721870422
+			}, {
+				'@type': 'Grounding',
+				'ontologyConcept': 'wm/concept/causal_factor/crisis_and_disaster/environmental_disasters/crop_failure',
+				'value': 0.6399765610694885
+			}, {
+				'@type': 'Grounding',
+				'ontologyConcept': 'wm/concept/causal_factor/environmental/meteorologic/weather',
+				'value': 0.6367738842964172
+			}, {
+				'@type': 'Grounding',
+				'ontologyConcept': 'wm/concept/causal_factor/environmental/meteorologic/precipitation/storm',
+				'value': 0.6261858940124512
+			}, {
+				'@type': 'Grounding',
+				'ontologyConcept': 'wm/concept/causal_factor/environmental/pollution/climate_change',
+				'value': 0.624721884727478
+			}, {
+				'@type': 'Grounding',
+				'ontologyConcept': 'wm/concept/causal_factor/crisis_and_disaster/environmental_disasters/natural_disaster/flooding',
+				'value': 0.590758740901947
+			}, {
+				'@type': 'Grounding',
+				'ontologyConcept': 'wm/concept/causal_factor/interventions/provide/agriculture_inputs/crop_production/',
+				'value': 0.5525134205818176
+			}, {
+				'@type': 'Grounding',
+				'ontologyConcept': 'wm/concept/causal_factor/interventions/build/agriculture_infrastructure/crop_production/',
+				'value': 0.5525134205818176
+			}, {
+				'@type': 'Grounding',
+				'ontologyConcept': 'wm/concept/causal_factor/crisis_and_disaster/famine',
+				'value': 0.5452297925949097
+			}],
+			'@type': 'Groundings'
+		}],
+		'@id': '_:Extraction_1'
+	}, {
+		'subtype': 'causation',
+		'rule': 'ported_syntax_1_verb-Causal',
+		'text': 'Drought increases regional insecurity',
+		'canonicalName': 'Drought increases regional insecurity',
+		'labels': ['Causal', 'DirectedRelation', 'EntityLinker', 'Event'],
+		'relevance': 0.8567294478416443,
+		'provenance': [{
+			'documentCharPositions': [{
+				'@type': 'Interval',
+				'start': 0,
+				'end': 36
+			}],
+			'document': {
+				'@id': '_:Document_1'
+			},
+			'sentenceWordPositions': [{
+				'@type': 'Interval',
+				'start': 1,
+				'end': 4
+			}],
+			'@type': 'Provenance',
+			'sentence': {
+				'@id': '_:Sentence_1'
+			}
+		}],
+		'@type': 'Extraction',
+		'type': 'relation',
+		'groundings': [{
+			'@type': 'Groundings',
+			'name': 'wm_flattened',
+			'version': '4a840f1a7a3b4c1a9d085fe3c3870417e4acbaf6',
+			'versionDate': '2020-08-19T14:42:58Z'
+		}],
+		'arguments': [{
+			'@type': 'Argument',
+			'type': 'source',
+			'value': {
+				'@id': '_:Extraction_1'
+			}
+		}, {
+			'@type': 'Argument',
+			'type': 'destination',
+			'value': {
+				'@id': '_:Extraction_3'
+			}
+		}],
+		'@id': '_:Extraction_2',
+		'trigger': {
+			'@type': 'Trigger',
+			'text': 'increases',
+			'provenance': [{
+				'documentCharPositions': [{
+					'@type': 'Interval',
+					'start': 8,
+					'end': 16
+				}],
+				'document': {
+					'@id': '_:Document_1'
+				},
+				'sentenceWordPositions': [{
+					'@type': 'Interval',
+					'start': 2,
+					'end': 2
+				}],
+				'@type': 'Provenance',
+				'sentence': {
+					'@id': '_:Sentence_1'
+				}
+			}]
+		}
+	}, {
+		'subtype': 'entity',
+		'rule': 'simple-np++Increase_ported_syntax_1_verb',
+		'text': 'regional insecurity',
+		'canonicalName': 'regional insecurity',
+		'labels': ['Concept', 'Entity'],
+		'relevance': 0.8567294478416443,
+		'provenance': [{
+			'documentCharPositions': [{
+				'@type': 'Interval',
+				'start': 18,
+				'end': 36
+			}],
+			'document': {
+				'@id': '_:Document_1'
+			},
+			'sentenceWordPositions': [{
+				'@type': 'Interval',
+				'start': 3,
+				'end': 4
+			}],
+			'@type': 'Provenance',
+			'sentence': {
+				'@id': '_:Sentence_1'
+			}
+		}],
+		'@type': 'Extraction',
+		'type': 'concept',
+		'groundings': [{
+			'name': 'wm_flattened',
+			'versionDate': '2020-08-19T14:42:58Z',
+			'version': '4a840f1a7a3b4c1a9d085fe3c3870417e4acbaf6',
+			'values': [{
+				'@type': 'Grounding',
+				'ontologyConcept': 'wm/concept/causal_factor/social_and_political/threat/physical_insecurity',
+				'value': 0.7581923604011536
+			}, {
+				'@type': 'Grounding',
+				'ontologyConcept': 'wm/concept/causal_factor/food_insecurity/',
+				'value': 0.740392804145813
+			}, {
+				'@type': 'Grounding',
+				'ontologyConcept': 'wm/concept/causal_factor/social_and_political/conflict/tension',
+				'value': 0.6900308728218079
+			}, {
+				'@type': 'Grounding',
+				'ontologyConcept': 'wm/concept/causal_factor/social_and_political/political/political_instability',
+				'value': 0.6630769371986389
+			}, {
+				'@type': 'Grounding',
+				'ontologyConcept': 'wm/concept/causal_factor/crisis_and_disaster/famine',
+				'value': 0.6498616933822632
+			}, {
+				'@type': 'Grounding',
+				'ontologyConcept': 'wm/concept/causal_factor/food_insecurity/food_instability',
+				'value': 0.6492606401443481
+			}, {
+				'@type': 'Grounding',
+				'ontologyConcept': 'wm/concept/causal_factor/crisis_and_disaster/economic/economic_crisis',
+				'value': 0.634482741355896
+			}, {
+				'@type': 'Grounding',
+				'ontologyConcept': 'wm/concept/causal_factor/crisis_and_disaster/economic/',
+				'value': 0.6256070733070374
+			}, {
+				'@type': 'Grounding',
+				'ontologyConcept': 'wm/concept/causal_factor/economic_and_commerce/economic_activity/',
+				'value': 0.6256070733070374
+			}, {
+				'@type': 'Grounding',
+				'ontologyConcept': 'wm/concept/causal_factor/social_and_political/conflict/hostility',
+				'value': 0.6174696087837219
+			}],
+			'@type': 'Groundings'
+		}],
+		'states': [{
+			'@type': 'State',
+			'type': 'INC',
+			'text': 'increases',
+			'provenance': [{
+				'documentCharPositions': [{
+					'@type': 'Interval',
+					'start': 8,
+					'end': 16
+				}],
+				'document': {
+					'@id': '_:Document_1'
+				},
+				'sentenceWordPositions': [{
+					'@type': 'Interval',
+					'start': 2,
+					'end': 2
+				}],
+				'@type': 'Provenance',
+				'sentence': {
+					'@id': '_:Sentence_1'
+				}
+			}]
+		}],
+		'@id': '_:Extraction_3'
+	}]
+}

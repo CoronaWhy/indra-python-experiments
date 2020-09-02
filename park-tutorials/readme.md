@@ -4,11 +4,15 @@
 ## Intentions
 These experiments are just baby steps to learn the massive Indra ecosystem (and, I'll confess, learn Python).
 
-# Experiments
+## Experiments
 From time to time, I might create directories for outputs of these experiments for further study.
 
 ### indra8.py
 This is a single PMCID test which performs all filtering. It is presently configured to run Reach running locally.
+My experience running Reach locally is that it is sensitive to which version of Scala is in play. I found that it required version 2.12; it was developed on 2.11, but my Mac had 2.13 installed, so I had to bring down 2.12 and export the path to 2.12 before running the boot command, which is 
+```sbt 'run-main org.clulab.reach.export.server.ApiServer'```
+
+The process is simple: just clone the Reach repo, navigate to that directory, then boot it. It takes care of compiling by itself.
 
 ### indra9.py
 This processes an array of PMCIds all the way through filtering and accumulating the final Statements in a single JSON file, as well as an HTML file for browsing.

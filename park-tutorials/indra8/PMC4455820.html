@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="https://bigmech.s3.amazonaws.com/indra-db/favicon.ico">
+
+    <title>INDRA Results</title>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet"
+          href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+          integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+          crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+            crossorigin="anonymous"></script>
+
+    <style>
+        a {
+            color: #256DC5;
+            target-new: tab;
+        }
+        h1 {
+            margin-bottom: 0;
+        }
+        .page-header {
+            padding: 1em;
+        }
+
+    </style>
+
+    
+  <!-- Toggle a hidden element -->
+  <script>
+    const pubmed_fetch = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi";
+    let ALL_COLLAPSED = true;
+
+    function toggler(short_name_key) {
+      $("#" + short_name_key + "_group").toggle();
+      let header = "#" + short_name_key + "_heading";
+      $(header).show();
+    }
+
+    function getPubMedMETAxmlByPMID(pmid) {
+      let params_dict = {
+        'db': 'pubmed',
+        'retmode': 'xml',
+        'rettype': 'docsum',
+        'id': pmid
+      };
+      return $.ajax({
+        url: pubmed_fetch,
+        type: "POST",
+        dataType: "xml",
+        data: params_dict,
+      });
+    }
+
+    function pmidXML2dict(XML) {
+      let xml_dict = {};
+      for (let child of XML.children) {
+        let name = child.getAttribute("Name");
+        let type = child.getAttribute("Type");
+        if (child.hasChildNodes() && type === "List") {
+          let innerItems;
+          // Javascript can't really do nice recursive functions...
+          // special cases for "History" and "ArticleIds" which has unique inner Names
+          if (name === "ArticleIds" || name === "History") {
+            let innerDict = {};
+            for (c of child.children) {
+              innerDict[c.getAttribute("Name")] = c.textContent;
+            }
+            innerItems = innerDict;
+          } else {
+            let innerList = [];
+            for (c of child.children) {
+              innerList.push(c.textContent);
+            }
+            innerItems = innerList;
+          }
+          xml_dict[name] = innerItems
+        } else if (child.tagName === "Item") {
+          // Here just get the inner strings
+          xml_dict[name] = child.textContent;
+        } else if (child.tagName === "Id") {
+          // Special case
+          xml_dict["Id"] = child.textContent;
+        } else {
+          if (!xml_dict["no_key"]) {
+            xml_dict["no_key"] = [child.textContent]
+          } else {
+            xml_dict["no_key"].push(child.textContent)
+          }
+        }
+      }
+      return xml_dict;
+    }
+
+    // Modify link hover text
+    function setPMIDlinkTitle(pmid, link_tag) {
+      let pubmed_xml_promise = getPubMedMETAxmlByPMID(pmid);
+      pubmed_xml_promise.then(responseXML => {
+        const docsum_xml = responseXML.getElementsByTagName('DocSum')[0];
+        const pmd = pmidXML2dict(docsum_xml);
+        const nAuthors = pmd.AuthorList.length;
+        let authorsStr;
+        if (nAuthors > 3)
+          authorsStr = `${pmd.AuthorList[0]}, ... ${pmd.AuthorList[nAuthors - 1]}`;
+        else
+          authorsStr = pmd.AuthorList.join(", ");
+
+        // Shortened journal name is in .Source, while full name is in .FullJournalName
+        link_tag.title = `${authorsStr}, "${pmd.Title}", ${pmd.Source}, ${pmd.SO}`;
+      })
+    }
+
+    // Loop all pmid link nodes and set title
+    function populatePMIDlinkTitles() {
+      let pmid_link_array = document.getElementsByClassName("pmid_link");
+      for (link_obj of pmid_link_array) {
+        pmid = link_obj.textContent;
+        setPMIDlinkTitle(pmid, link_obj)
+      }
+    }
+
+    // Expand/collapse all
+    function expandCollapseAll() {
+      let expColBtn = document.getElementById('expand-collapse-all');
+      let setCss = '';
+
+      // Expand all; set ALL_COLLAPSED = false;
+      if (ALL_COLLAPSED) {
+        setCss = 'display: block;';
+        ALL_COLLAPSED = false;
+        expColBtn.textContent = 'Collapse All';
+        // Collapse all; set ALL_COLLAPSED = true;
+      } else {
+        setCss = 'display: none;';
+        ALL_COLLAPSED = true;
+        expColBtn.textContent = 'Expand All';
+      }
+
+      // Loop all tags
+      for (tag of document.getElementsByClassName('group')) {
+        tag.style.cssText = setCss
+      }
+    }
+
+    
+  </script>
+  <style>
+    
+      
+        .source-phosphosite {
+          background-color: #bc80bd;
+          color: black;
+        }
+      
+        .source-cbn {
+          background-color: #fccde5;
+          color: black;
+        }
+      
+        .source-pc11 {
+          background-color: #b3de69;
+          color: black;
+        }
+      
+        .source-biopax {
+          background-color: #80b1d3;
+          color: black;
+        }
+      
+        .source-bel_lc {
+          background-color: #fb8072;
+          color: black;
+        }
+      
+        .source-signor {
+          background-color: #bebada;
+          color: black;
+        }
+      
+        .source-biogrid {
+          background-color: #fdb462;
+          color: black;
+        }
+      
+        .source-lincs_drug {
+          background-color: #d9d9d9;
+          color: black;
+        }
+      
+        .source-tas {
+          background-color: #8dd3c7;
+          color: black;
+        }
+      
+        .source-hprd {
+          background-color: #ffed6f;
+          color: black;
+        }
+      
+        .source-trrust {
+          background-color: #ccebc5;
+          color: black;
+        }
+      
+        .source-ctd {
+          background-color: #e0e03d;
+          color: black;
+        }
+      
+        .source-virhostnet {
+          background-color: #ffe8f4;
+          color: black;
+        }
+      
+        .source-phosphoelm {
+          background-color: #acfcfc;
+          color: black;
+        }
+      
+        .source-drugbank {
+          background-color: #dd99ff;
+          color: black;
+        }
+      
+    
+      
+        .source-geneways {
+          background-color: #bc80bd;
+          color: white;
+        }
+      
+        .source-tees {
+          background-color: #fccde5;
+          color: white;
+        }
+      
+        .source-isi {
+          background-color: #b3de69;
+          color: white;
+        }
+      
+        .source-trips {
+          background-color: #80b1d3;
+          color: white;
+        }
+      
+        .source-rlimsp {
+          background-color: #fb8072;
+          color: white;
+        }
+      
+        .source-medscan {
+          background-color: #bebada;
+          color: white;
+        }
+      
+        .source-sparser {
+          background-color: #fdb462;
+          color: white;
+        }
+      
+        .source-eidos {
+          background-color: #d9d9d9;
+          color: white;
+        }
+      
+        .source-reach {
+          background-color: #8dd3c7;
+          color: white;
+        }
+      
+    
+
+    .badge-source {
+      font-size: 8pt;
+      margin: 0;
+    }
+
+    .statements-header {
+      position: -webkit-sticky;
+      position: sticky;
+      top: 0;
+      background-color: white;
+      z-index: 10;
+      padding-top: 5px;
+    }
+
+    .nvp {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .src-api {
+        overflow-x: hidden;
+    }
+
+    .group, .group-shown {
+        padding: 5px;
+        margin: 5px;
+    }
+
+    .group {
+        display: none;
+        border-left: #0d5aa7 solid 1px;
+        border-right: #0d5aa7 solid 1px;
+    }
+
+    .super_group_heading, .group_heading, .statement, .evidence {
+        padding: 2px;
+        padding-left: 5px;
+        margin: 2px;
+        position: sticky;
+        border-radius: 2px;
+    }
+
+    .evidence, .evidence-text {
+        margin-bottom: 10px;
+    }
+
+    .evidence-text {
+        border-top: #cfcfcf solid 1px;
+        padding-top: 0.5em;
+    }
+
+    .super_group_heading, .group_heading {
+        cursor: pointer;
+    }
+
+    .super_group_heading:hover, .group_heading:hover {
+        background-color: #f2f2f2;
+    }
+
+    .badge-subject {
+        background-color: #4a36aa;
+        color: #FFFFFF;
+    }
+
+    .badge-object {
+        background-color: #2d8e4c;
+        color: #FFFFFF;
+    }
+
+    .badge-other {
+        background-color: #606060;
+        color: #FFFFFF;
+    }
+
+    .curation-row {
+        overflow-y: hidden;
+    }
+
+    .curation_toggle {
+        cursor: pointer;
+    }
+
+    .pmid_link, .pmcid_link, .doi_link {
+      display: block;
+    }
+    
+  </style>
+
+
+</head>
+
+<body>
+<div class="container">
+    <!-- Page Header -->
+    <div class="page-header">
+        
+            <h1>INDRA Results</h1>
+        
+    </div>
+    
+  This page allows you to curate the loaded statements. For more information
+  please see the
+  <a href="https://indra.readthedocs.io/en/latest/tutorials/html_curation.html"
+     target="_blank">manual</a>.
+
+    <hr>
+    
+  <div class="statements-header">
+    <div class="row">
+      <div class="col">
+        <h3 >
+          Statements
+        </h3>
+      </div>
+      <div class="col text-right">
+        <button id="expand-collapse-all" type="button"
+            class="btn btn-primary"
+            onclick="expandCollapseAll()">
+          Expand All
+        </button>
+      </div>
+    </div>
+    
+      <div class="row justify-content-md-center">
+        <div class="col-1 text-right">
+          databases
+        </div>
+        <div class="col col-auto text-center">
+          
+    
+      
+      
+        
+          <span class="badge badge-source source-phosphosite"
+              title="phosphosite">
+      phosphosite
+      </span>
+        
+      
+        
+          <span class="badge badge-source source-cbn"
+              title="cbn">
+      cbn
+      </span>
+        
+      
+        
+          <span class="badge badge-source source-pc11"
+              title="pc11">
+      pc11
+      </span>
+        
+      
+        
+          <span class="badge badge-source source-biopax"
+              title="biopax">
+      biopax
+      </span>
+        
+      
+        
+          <span class="badge badge-source source-bel_lc"
+              title="bel_lc">
+      bel_lc
+      </span>
+        
+      
+        
+          <span class="badge badge-source source-signor"
+              title="signor">
+      signor
+      </span>
+        
+      
+        
+          <span class="badge badge-source source-biogrid"
+              title="biogrid">
+      biogrid
+      </span>
+        
+      
+        
+          <span class="badge badge-source source-lincs_drug"
+              title="lincs_drug">
+      lincs_drug
+      </span>
+        
+      
+        
+          <span class="badge badge-source source-tas"
+              title="tas">
+      tas
+      </span>
+        
+      
+        
+          <span class="badge badge-source source-hprd"
+              title="hprd">
+      hprd
+      </span>
+        
+      
+        
+          <span class="badge badge-source source-trrust"
+              title="trrust">
+      trrust
+      </span>
+        
+      
+        
+          <span class="badge badge-source source-ctd"
+              title="ctd">
+      ctd
+      </span>
+        
+      
+        
+          <span class="badge badge-source source-virhostnet"
+              title="virhostnet">
+      virhostnet
+      </span>
+        
+      
+        
+          <span class="badge badge-source source-phosphoelm"
+              title="phosphoelm">
+      phosphoelm
+      </span>
+        
+      
+        
+          <span class="badge badge-source source-drugbank"
+              title="drugbank">
+      drugbank
+      </span>
+        
+      
+    
+      
+        <span class="badge badge-source">|</span>
+      
+      
+        
+          <span class="badge badge-source source-geneways"
+              title="geneways">
+      geneways
+      </span>
+        
+      
+        
+          <span class="badge badge-source source-tees"
+              title="tees">
+      tees
+      </span>
+        
+      
+        
+          <span class="badge badge-source source-isi"
+              title="isi">
+      isi
+      </span>
+        
+      
+        
+          <span class="badge badge-source source-trips"
+              title="trips">
+      trips
+      </span>
+        
+      
+        
+          <span class="badge badge-source source-rlimsp"
+              title="rlimsp">
+      rlimsp
+      </span>
+        
+      
+        
+          <span class="badge badge-source source-medscan"
+              title="medscan">
+      medscan
+      </span>
+        
+      
+        
+          <span class="badge badge-source source-sparser"
+              title="sparser">
+      sparser
+      </span>
+        
+      
+        
+          <span class="badge badge-source source-eidos"
+              title="eidos">
+      eidos
+      </span>
+        
+      
+        
+          <span class="badge badge-source source-reach"
+              title="reach">
+      reach
+      </span>
+        
+      
+    
+  
+        </div>
+        <div class="col-1 text-left">
+          reading
+        </div>
+      </div>
+    
+    <hr>
+  </div>
+  
+    
+    
+      <div class="group-shown" id="tl-e1c457ec-fd60-4815-8e1f-fa29dc428c66_group">
+    
+        <div class="container nvp">
+        
+          
+          
+            <div class="row group-shown" id="15911653-ac70-43d5-b1ca-280814c87232_group">
+          
+              <div class="container nvp">
+              
+                
+                <a name="30579870117588847"></a>
+                <div class="row statement">
+                  <div class="col text-left nvp">
+                    <h5 class="align-middle">
+                      <a href='https://identifiers.org/mesh/D002118' target='_blank'>Calcium atom</a> activates <a href='https://identifiers.org/hgnc/HGNC:1514' target='_blank'>CASR</a>.
+                      <a href="#"
+                         >
+                        <small class="badge badge-secondary badge-pill">2 / 2</small>
+                      </a>
+                    </h5>
+                  </div>
+                  <div class="col text-right nvp">
+                    
+    
+      
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+      
+        <span class="badge badge-source">|</span>
+      
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          <span class="badge badge-source source-reach"
+              title="reach">
+      2
+      </span>
+        
+      
+    
+  
+                  </div>
+                </div>
+                <div class="row evidence">
+                  <div class="container" id="stmt-0-0-0"
+                       data-stmt_hash="30579870117588847">
+                    
+                      <div class="row evidence-text" data-source_hash="-3577503284111474852"
+                           style="border-bottom: 1px solid #FFFFFF;"
+                           id="ev-0-0-0-0">
+
+                        <div class="col-1">
+                            <div class="row">
+                                <div class="col-3 nvp curation_toggle"
+                                     id="ev-0-0-0-0-click"
+                                     data-parent_id="ev-0-0-0-0">
+                                    <a href="#"
+                                       >
+                                        &#10166;
+                                    </a>
+                                </div>
+                                <div class="col-9 nvp src-api"
+                                     title="reach">
+                                    reach
+                                </div>
+                            </div>
+                        </div>
+                        
+                          <div class="col-10">
+                        
+
+                          
+                            "High <span class="badge badge-subject">calcium</span> concentrations activate the extracellular <span class="badge badge-object">CaSR</span> which eventually results in decreased PTH secretion [56, 63]."
+                          
+                        </div>
+                        
+                        
+                          <div class="col-1 text-right">
+                        
+                        
+                          <a class="pmid_link"
+                              title="Hover again to see info"
+                              onmouseover="setPMIDlinkTitle(this.textContent, this); this.onmouseover=null;"
+                              href='https://www.ncbi.nlm.nih.gov/pubmed/26069820'
+                              target="_blank">
+                            26069820</a>
+                        
+
+                          
+                        </div>
+                      </div>
+                    
+                      <div class="row evidence-text" data-source_hash="-565214089595525462"
+                           style="border-bottom: 1px solid #FFFFFF;"
+                           id="ev-0-0-0-1">
+
+                        <div class="col-1">
+                            <div class="row">
+                                <div class="col-3 nvp curation_toggle"
+                                     id="ev-0-0-0-1-click"
+                                     data-parent_id="ev-0-0-0-1">
+                                    <a href="#"
+                                       >
+                                        &#10166;
+                                    </a>
+                                </div>
+                                <div class="col-9 nvp src-api"
+                                     title="reach">
+                                    reach
+                                </div>
+                            </div>
+                        </div>
+                        
+                          <div class="col-10">
+                        
+
+                          
+                            "<span class="badge badge-subject">Calcium</span> is the dominant activator of the <span class="badge badge-object">calcium-sensing receptor</span> (CaSR), but other divalent and trivalent cations are also potent Type I activators of this receptor."
+                          
+                        </div>
+                        
+                        
+                          <div class="col-1 text-right">
+                        
+                        
+                          <a class="pmid_link"
+                              title="Hover again to see info"
+                              onmouseover="setPMIDlinkTitle(this.textContent, this); this.onmouseover=null;"
+                              href='https://www.ncbi.nlm.nih.gov/pubmed/26069820'
+                              target="_blank">
+                            26069820</a>
+                        
+
+                          
+                        </div>
+                      </div>
+                    
+                  </div> <!-- container -->
+                </div> <!-- row evidence -->
+              
+             </div> <!-- PA Statement container -->
+           </div> <!-- PA Statement group -->
+         
+       </div> <!-- container -->
+     </div> <!-- type groups -->
+  
+
+    <hr>
+    <!-- Footer -->
+    <footer class="footer text-muted" id="about">
+        <h5 class="my-0 mr-md-auto font-weight-normal">About</h5>
+
+        INDRA is developed by <a href="https://indralab.github.io/">indralabs</a>,
+        a part of the Harvard Medical School Laboratory of Systems Pharmacology.
+
+        
+        
+    </footer>
+</div>
+</body>
+</html>

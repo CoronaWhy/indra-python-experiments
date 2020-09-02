@@ -1,0 +1,130 @@
+[
+ {
+  "type": "Activation",
+  "subj": {
+   "name": "calcium atom",
+   "db_refs": {
+    "PUBCHEM": "5460341",
+    "TEXT": "calcium",
+    "DRUGBANK": "DB01373",
+    "CHEBI": "CHEBI:22984",
+    "MESH": "D002118"
+   }
+  },
+  "obj": {
+   "name": "CASR",
+   "db_refs": {
+    "UP": "P41180",
+    "TEXT": "CaSR",
+    "HGNC": "1514",
+    "MESH": "D044169"
+   }
+  },
+  "obj_activity": "activity",
+  "belief": 0.86,
+  "evidence": [
+   {
+    "source_api": "reach",
+    "pmid": "26069820",
+    "text": "High calcium concentrations activate the extracellular CaSR which eventually results in decreased PTH secretion [56, 63].",
+    "annotations": {
+     "found_by": "Positive_activation_syntax_1_verb",
+     "agents": {
+      "coords": [
+       [
+        5,
+        12
+       ],
+       [
+        55,
+        59
+       ]
+      ],
+      "raw_text": [
+       "calcium",
+       "CaSR"
+      ],
+      "raw_grounding": [
+       {
+        "PUBCHEM": "5460341",
+        "TEXT": "calcium",
+        "DRUGBANK": "DB01373",
+        "CHEBI": "CHEBI:22984",
+        "MESH": "D002118"
+       },
+       {
+        "UP": "P41180",
+        "TEXT": "CaSR",
+        "HGNC": "1514",
+        "MESH": "D044169"
+       }
+      ]
+     },
+     "prior_uuids": [
+      "3e25607f-216a-40ed-961d-2bb53082fe12"
+     ]
+    },
+    "epistemics": {
+     "direct": false,
+     "section_type": null
+    },
+    "text_refs": {
+     "PMID": "26069820"
+    },
+    "source_hash": -3577503284111474852
+   },
+   {
+    "source_api": "reach",
+    "pmid": "26069820",
+    "text": "Calcium is the dominant activator of the calcium-sensing receptor (CaSR), but other divalent and trivalent cations are also potent Type I activators of this receptor.",
+    "annotations": {
+     "found_by": "Positive_activation_copula_1",
+     "agents": {
+      "coords": [
+       [
+        0,
+        7
+       ],
+       [
+        41,
+        65
+       ]
+      ],
+      "raw_text": [
+       "Calcium",
+       "calcium-sensing receptor"
+      ],
+      "raw_grounding": [
+       {
+        "PUBCHEM": "5460341",
+        "TEXT": "Calcium",
+        "DRUGBANK": "DB01373",
+        "CHEBI": "CHEBI:22984",
+        "MESH": "D002118"
+       },
+       {
+        "UP": "P41180",
+        "TEXT": "calcium-sensing receptor",
+        "HGNC": "1514",
+        "MESH": "D044169"
+       }
+      ]
+     },
+     "prior_uuids": [
+      "021d28dd-ff14-43b5-aa3f-35e3124c3479"
+     ]
+    },
+    "epistemics": {
+     "direct": false,
+     "section_type": null
+    },
+    "text_refs": {
+     "PMID": "26069820"
+    },
+    "source_hash": -565214089595525462
+   }
+  ],
+  "id": "a3112cdf-17ca-4ef8-bf7f-f8e9bbe6764e",
+  "matches_hash": "30579870117588847"
+ }
+]
